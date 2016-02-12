@@ -1,0 +1,7 @@
+1. create process
+2. pipe()
+3. load the program
+4.
+
+Need four processes, three pipes
+dup2() connects two processes together
