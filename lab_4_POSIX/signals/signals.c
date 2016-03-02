@@ -18,16 +18,16 @@ void catch_int(int sig_num)
 
     /* prompt the user to tell us if to really
      * exit or not */
+     got_response = 0;
     printf("\nReally exit? [Y/n]: ");
 
     //instantiate alarm
     alarm(5);
-
     fflush(stdout);
-    fgets(answer, sizeof(answer), stdin);
 
+    if(fgets(answer, sizeof(answer), stdin)){
+        got_response = 1;
     if ((answer[0] == 'n' || answer[0] == 'N') ) {
-      got_response = 1;
       printf("\nContinuing\n");
       fflush(stdout);
       /*
@@ -41,6 +41,7 @@ void catch_int(int sig_num)
       exit(0);
     }
   }
+  }//end fgets
 }
 
 /* the Ctrl-Z signal handler */
@@ -58,9 +59,9 @@ void catch_alrm(int sig_num) {
     printf("\nUser taking too long to respond. Exiting...");
     exit(0);
   }
-
-  got_response = 0;
-  fflush(stdout);
+  else{
+      //do nothing
+  }
 }
 
   // 2 - SIGINT = Crtl+C
@@ -71,31 +72,25 @@ void catch_alrm(int sig_num) {
 int main(int argc, char* argv[])
 {
   struct sigaction sa;
-  struct sigaction sa_2;
-  struct sigaction sa_alarm;
   sigset_t mask_set;  /* used to set a signal masking set. */
 
-    /* set signal handlers */
+  sigfillset(&mask_set);
+  sigdelset(&mask_set, SIGALRM);
+
+  /* setup signal interrupt handler and sigaction */
+  sa.sa_handler = catch_tstp;
+  sigaction(SIGTSTP, &sa, NULL);
+
+  /* setup signal interrupt handler and sigaction */
   sa.sa_handler = catch_int;
-  sa_2.sa_handler = catch_tstp;
-  sa_alarm.sa_handler = catch_alrm;
+  sigaction(SIGINT, &sa, NULL);
 
-  /* setup mask_set */
-  sigfillset(&sa.sa_mask);
-  sigfillset(&sa_2.sa_mask);
-  sigfillset(&sa_alarm.sa_mask);
-
-  /* ensure that alarm signals are executed if recieved */
-  sigdelset(&sa.sa_mask, SIGALRM);
-  //sigdelset(&sa_2.sa_mask, SIGALRM);
-  //sigdelset(&sa_alarm.sa_mask, SIGALRM);
-
-  //assign sigactions to handled specifc signal numbers
-  sigaction(2, &sa, NULL);
-  sigaction(18, &sa_2, NULL);
-  sigaction(14, &sa_alarm, NULL);
+  /* setup alarm */
+  sa.sa_handler = catch_alrm;
+  sigaction(SIGALRM, &sa, NULL);
 
   while(1) {
+      //user interaction
     pause();
   }
 
