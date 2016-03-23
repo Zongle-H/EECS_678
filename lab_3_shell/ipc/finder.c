@@ -27,26 +27,12 @@ int main(int argc, char *argv[])
     exit(0);
   }
 
-  // declare pipes and make the pipe() system call before
+  // declare pipes
    int fd_1[2];
    int fd_2[2];
    int fd_3[2];
 
-   /*
-   if(pipe(fd_1) < 0) {
-     printf("Couldn't make first pipe\n");
-     return -1;
-   }
-
-   if(pipe(fd_2) < 0){
-     printf("Couldn't make second pipe\n");
-   };
-
-   if(pipe(fd_3) < 0){
-     printf("Couldn't make third pipe\n");
-   };
-   set up pipes */
-
+  //instantiate pipe and fork to first child process
   pipe(fd_1);
   pid_1 = fork();
   if (pid_1 == 0) {
@@ -94,6 +80,7 @@ int main(int argc, char *argv[])
     exit(0);
   }
 
+  //close pipe after using
   close(fd_1[READ_END]);
   close(fd_2[WRITE_END]);
 
@@ -109,7 +96,7 @@ int main(int argc, char *argv[])
     dup2(fd_3[WRITE_END], STDOUT_FILENO);
 
     if( (execl(BASH_EXEC, BASH_EXEC, "-c", cmdbuf, (char*) 0)) < 0) {
-      fprintf(stderr, "\nError execing xargs grep. ERROR#%d\n", errno);
+      fprintf(stderr, "\nError execing sort. ERROR#%d\n", errno);
       return EXIT_FAILURE;
     }
 
@@ -129,7 +116,7 @@ int main(int argc, char *argv[])
     dup2(fd_3[READ_END], STDIN_FILENO);
 
     if( (execl(BASH_EXEC, BASH_EXEC, "-c", cmdbuf, (char*) 0)) < 0) {
-      fprintf(stderr, "\nError execing xargs grep. ERROR#%d\n", errno);
+      fprintf(stderr, "\nError execing head. ERROR#%d\n", errno);
       return EXIT_FAILURE;
     }
 
