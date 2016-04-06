@@ -52,7 +52,7 @@ static int available_chopsticks[NUM_CHOPS];
 
 /*
  * Helper functions for grabbing chopsticks, referencing neighbors.
- * Numbering assumptions: 
+ * Numbering assumptions:
  *   Philosophers: 1 -> NUM_PHILS
  *      - Left philosopher is (number + 1) modulo NUM_PHILS
  *      - Right philosopher is (number - 1) modulo NUM_PHILS
@@ -150,27 +150,58 @@ static void *dp_thread(void *arg)
     }
 
     /*
-     * Grab both chopsticks: ASYMMETRIC and WAITER SOLUTION
+     * Grab both chopsticks: WAITER SOLUTION
+     * Need to confirm that both chopsticks are available for the waiter to
+     * give to the philospher. Once chopsticks acquired, need to update the
+     * available_chopsticks arr to show they are being used.
      */
-    pthread_mutex_lock(left_chop(me));
-    pthread_mutex_lock(right_chop(me));
+
+     /*
+     * acquire the waiter mutex and hold in while loop until the
+     * two appropriate chopsticks are available
+     */
+     pthread_mutex_lock(&waiter);
+
+    while(!left_chop_available(me) || !(right_chop_available(me))){
+        pthread_cond_wait(&(me->can_eat), &waiter);
+    }
+
+    /*
+    * Acquire the chopsticks once available, and update the array to reflect
+    * their usage.
+    */
+    *left_chop_available(me) = 0;
+    *right_chop_available(me) = 0;
+
+    pthread_mutex_unlock(&waiter);
 
     /*
      * Eat some random amount of food. Again, this involves a
      * subroutine call for each mouthful, which is a feature, not a
      * bug.
      */
-    for (i = 0; i < eat_rnd; i++){
+     for (i = 0; i < eat_rnd; i++){
       eat_one_mouthful();
     }
 
     /*
-     * Release both chopsticks: WAITER SOLUTION
+     * Acquire the waiter mutex again and update
+     * Update the available_chopsticks arr to reflect the Philosopher
+     * giving back his chopsticks to the waiter
      */
-    pthread_mutex_unlock(right_chop(me));
-    pthread_mutex_unlock(left_chop(me));
+    pthread_mutex_lock(&waiter);
+    *left_chop_available(me) = 1;
+    *right_chop_available(me) = 1;
 
-    /* 
+
+    /*
+    * Signal to left and right neighbors that they can_eat
+    */
+    pthread_cond_broadcast(&(right_phil(me)->can_eat));
+    pthread_cond_broadcast(&(left_phil(me)->can_eat));
+    pthread_mutex_unlock(&waiter);
+
+    /*
      * Update my progress in current session and for all time.
      */
     me->prog++;
@@ -258,7 +289,7 @@ void print_progress()
        * with a constant width to make things line up in columns for
        * better readability.
        */
-      sprintf(buf, "%d/%d", 
+      sprintf(buf, "%d/%d",
               Diners[i].prog, Diners[i].prog_total);
       printf("p%d=%*s   ", i, STATS_WIDTH, buf);
       i++;
@@ -272,7 +303,7 @@ void print_progress()
     /*
      * Print the 5th on the line, with a newline to end the line
      */
-    sprintf(buf, "%d/%d", 
+    sprintf(buf, "%d/%d",
             Diners[i].prog, Diners[i].prog_total);
     printf("p%d=%*s\n", i, STATS_WIDTH, buf);
     i++;
@@ -368,4 +399,3 @@ int main(int argc, char **argv)
 
   return 0;
 }
-
