@@ -13,6 +13,6 @@ clean:
 tar:
 	make clean
 	mkdir $(MY_LAST_NAME)-$(STUDENT_ID)-qsort_comparer-lab
-	cp Makefile qsort.c $(MY_LAST_NAME)-$(STUDENT_ID)-qsort_comparer-lab/
+	cp Makefile qsort.c process.txt $(MY_LAST_NAME)-$(STUDENT_ID)-qsort_comparer-lab/
 	tar cvzf $(MY_LAST_NAME)-$(STUDENT_ID)-qsort_comparer-lab.tar.gz $(MY_LAST_NAME)-$(STUDENT_ID)-qsort_comparer-lab
 	rm -rf $(MY_LAST_NAME)-$(STUDENT_ID)-qsort_comparer-lab
