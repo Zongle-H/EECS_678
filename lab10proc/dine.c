@@ -232,7 +232,7 @@ int check_for_deadlock()
 
     /*
      * 2. Use fopen to open the stat file as a file stream. Open it
-     * with read only permissions.
+     * with read only permissions. TEST
      */
 
 
