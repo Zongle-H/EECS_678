@@ -229,19 +229,14 @@ int check_for_deadlock()
      * "/proc/self/task/%d/stat"
      */
 
-     char filename[80] = sprintf("/proc/self/task/%d/stat",diners[i].tid);
-
-     
-
+     filename = sprintf("/proc/self/task/%d/stat",diners[i].tid);
 
     /*
      * 2. Use fopen to open the stat file as a file stream. Open it
      * with read only permissions. TEST
      */
 
-
-
-
+     statf = fopen(filename,'r');
 
     /*
      * 3. Seek over uninteresting fields. Use fscanf to perform the seek.  You
@@ -249,32 +244,38 @@ int check_for_deadlock()
      * HINT: Use the the * qualifier to skip tokens without storing them.
      */
 
-
-
+     for(j=0;j<13;j++){
+         //read the first thirteen data fields and discard input
+         fscanf(statf,"%*s");
+     }
 
 
     /*
      * 4. Read the time values you want. Use fscanf again.
      */
 
+     fscanf(statf,"%lu",new_user_time);
+     fscanf(statf,"%lu",new_sys_time);
 
-
+     fprintf("Here is new user time: %lu",new_user_time);
+     fprintf("Here is new sys time: %lu",new_sys_time);
 
 
     /*
      * 5. Use time values to determine if deadlock has occurred.
      */
-
-
-
-
-
-
-
+     if(new_sys_time + new_user_time == sys_time[i] + user_time[i]){
+         printf("NEW TIMES EQUAL OLD TIMES\n");
+         deadlock = 0;
+     }
+     else{
+         printf("DIFFERENCE\n");
+     }
 
     /*
      * 6. Close the stat file stream
      */
+     close(staf);
 
   }
 
