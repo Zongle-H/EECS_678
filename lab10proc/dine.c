@@ -247,7 +247,6 @@ int check_for_deadlock()
      for(j=0;j<FIELDS_TO_IGNORE;j++){
          //read the first thirteen data fields and discard input
          fscanf(statf,"%*s");
-         printf("skipping shit\n");
      }
 
 
@@ -265,15 +264,12 @@ int check_for_deadlock()
     /*
      * 5. Use time values to determine if deadlock has occurred.
      */
-     if(new_user_time + new_sys_time != user_time[i] + sys_time[i]){
+     if(new_user_time - user_progress[i] != 0 || new_sys_time - sys_progress[i] != 0){
          user_progress[i] = new_user_time - user_progress[i];
          sys_progress[i] = new_sys_time - sys_progress[i];
          sys_time[i] = new_sys_time;
          user_time[i] = new_user_time;
          deadlock = 0;
-     }
-     else{
-         printf("NEW EQUAL OLD\n");
      }
 
     /*
