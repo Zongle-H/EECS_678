@@ -244,7 +244,7 @@ int check_for_deadlock()
      * HINT: Use the the * qualifier to skip tokens without storing them.
      */
 
-     for(j=0;j<13;j++){
+     for(j=0;j<FIELDS_TO_IGNORE;j++){
          //read the first thirteen data fields and discard input
          fscanf(statf,"%*s");
          printf("skipping shit\n");
@@ -255,8 +255,8 @@ int check_for_deadlock()
      * 4. Read the time values you want. Use fscanf again.
      */
 
-     fscanf(statf,"%ul",new_user_time);
-     fscanf(statf,"%ul",new_sys_time);
+     fscanf(statf,"%ul",&new_user_time);
+     fscanf(statf,"%ul",&new_sys_time);
 
     // fprintf("Here is new user time: %lu",(unsigned long)new_user_time);
     // fprintf("Here is new sys time: %lu",(unsigned long)new_sys_time);
@@ -265,8 +265,10 @@ int check_for_deadlock()
     /*
      * 5. Use time values to determine if deadlock has occurred.
      */
-     if(new_sys_time + new_user_time == sys_time[i] + user_time[i]){
+     if(new_sys_time + new_user_time != sys_time[i] + user_time[i]){
          printf("NEW TIMES EQUAL OLD TIMES\n");
+         sys_time[i] = new_sys_time;
+         user_time[i] = new_user_time;
          deadlock = 0;
      }
      else{
