@@ -236,7 +236,6 @@ int check_for_deadlock()
      */
 
      statf = fopen(filename,"r");
-     printf("opened file\n");
 
     /*
      * 3. Seek over uninteresting fields. Use fscanf to perform the seek.  You
