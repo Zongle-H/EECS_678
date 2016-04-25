@@ -228,8 +228,7 @@ int check_for_deadlock()
      * library call.
      * "/proc/self/task/%d/stat"
      */
-
-     filename = sprintf("/proc/self/task/%d/stat",diners[i].tid);
+     sprintf(filename,"/proc/self/task/%d/stat",diners[i].tid);
 
     /*
      * 2. Use fopen to open the stat file as a file stream. Open it
@@ -275,7 +274,7 @@ int check_for_deadlock()
     /*
      * 6. Close the stat file stream
      */
-     close(staf);
+     close(statf);
 
   }
 
