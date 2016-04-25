@@ -229,6 +229,10 @@ int check_for_deadlock()
      * "/proc/self/task/%d/stat"
      */
 
+     char filename[80] = sprintf("/proc/self/task/%d/stat",diners[i].tid);
+
+     
+
 
     /*
      * 2. Use fopen to open the stat file as a file stream. Open it
