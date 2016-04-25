@@ -236,6 +236,7 @@ int check_for_deadlock()
      */
 
      statf = fopen(filename,'r');
+     printf("opened file\n");
 
     /*
      * 3. Seek over uninteresting fields. Use fscanf to perform the seek.  You
@@ -246,6 +247,7 @@ int check_for_deadlock()
      for(j=0;j<13;j++){
          //read the first thirteen data fields and discard input
          fscanf(statf,"%*s");
+         printf("skipping shit\n");
      }
 
 
@@ -253,8 +255,8 @@ int check_for_deadlock()
      * 4. Read the time values you want. Use fscanf again.
      */
 
-     fscanf(statf,"%lu",new_user_time);
-     fscanf(statf,"%lu",new_sys_time);
+     fscanf(statf,"%ul",new_user_time);
+     fscanf(statf,"%ul",new_sys_time);
 
     // fprintf("Here is new user time: %lu",(unsigned long)new_user_time);
     // fprintf("Here is new sys time: %lu",(unsigned long)new_sys_time);
@@ -274,7 +276,7 @@ int check_for_deadlock()
     /*
      * 6. Close the stat file stream
      */
-     close(statf);
+     fclose(statf);
 
   }
 
