@@ -266,7 +266,8 @@ int check_for_deadlock()
      * 5. Use time values to determine if deadlock has occurred.
      */
      if(new_user_time + new_sys_time != user_time[i] + sys_time[i]){
-         printf("DIFFERNCE\n");
+         user_progress[i] = new_user_time - user_progress[i];
+         sys_progress[i] = new_sys_time - sys_progress[i];
          sys_time[i] = new_sys_time;
          user_time[i] = new_user_time;
          deadlock = 0;
