@@ -282,17 +282,17 @@ void *producer (void *parg)
      * it. Finally, at the end of the loop, outside the critical
      * section, announce that we produced it.
      */
+     pthread_mutex_lock(fifo->mutex);
     do_work(PRODUCER_CPU, PRODUCER_BLOCK);
 
     /*
      * If the queue is full, we have no place to put anything we
      * produce, so wait until it is not full.
      */
-        pthread_mutex_lock(fifo->mutex);
     while (fifo->full && *total_produced != WORK_MAX) {
         //block the thread until the queue is not full.
-        pthread_cond_wait(fifo->notFull,fifo->mutex);
         printf ("prod %d:  FULL.\n", my_tid);
+        pthread_cond_wait(fifo->notFull,fifo->mutex);
     }
 
     /*
@@ -352,8 +352,8 @@ void *consumer (void *carg)
      //obtain mutex
      pthread_mutex_lock(fifo->mutex);
     while (fifo->empty && *total_consumed != WORK_MAX) {
-      printf ("con %d:   EMPTY.\n", my_tid);
-      pthread_cond_wait(fifo->notEmpty,fifo->mutex);
+        printf ("con %d:   EMPTY.\n", my_tid);
+        pthread_cond_wait(fifo->notEmpty,fifo->mutex);
     }
 
     /*
