@@ -235,7 +235,7 @@ int check_for_deadlock()
      * with read only permissions. TEST
      */
 
-     statf = fopen(filename,'r');
+     statf = fopen(filename,"r");
      printf("opened file\n");
 
     /*
@@ -255,8 +255,8 @@ int check_for_deadlock()
      * 4. Read the time values you want. Use fscanf again.
      */
 
-     fscanf(statf,"%ul",&new_user_time);
-     fscanf(statf,"%ul",&new_sys_time);
+     fscanf(statf,"%lu",&new_user_time);
+     fscanf(statf,"%lu",&new_sys_time);
 
     // fprintf("Here is new user time: %lu",(unsigned long)new_user_time);
     // fprintf("Here is new sys time: %lu",(unsigned long)new_sys_time);
@@ -265,14 +265,14 @@ int check_for_deadlock()
     /*
      * 5. Use time values to determine if deadlock has occurred.
      */
-     if(new_sys_time + new_user_time != sys_time[i] + user_time[i]){
-         printf("NEW TIMES EQUAL OLD TIMES\n");
+     if(new_user_time + new_sys_time != user_time[i] + sys_time[i]){
+         printf("DIFFERNCE\n");
          sys_time[i] = new_sys_time;
          user_time[i] = new_user_time;
          deadlock = 0;
      }
      else{
-         printf("DIFFERENCE\n");
+         printf("NEW EQUAL OLD\n");
      }
 
     /*
