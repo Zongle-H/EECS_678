@@ -256,8 +256,8 @@ int check_for_deadlock()
      fscanf(statf,"%lu",new_user_time);
      fscanf(statf,"%lu",new_sys_time);
 
-     fprintf("Here is new user time: %lu",new_user_time);
-     fprintf("Here is new sys time: %lu",new_sys_time);
+    // fprintf("Here is new user time: %lu",(unsigned long)new_user_time);
+    // fprintf("Here is new sys time: %lu",(unsigned long)new_sys_time);
 
 
     /*
