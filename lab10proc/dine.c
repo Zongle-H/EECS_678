@@ -17,7 +17,7 @@
 #define FIELDS_TO_IGNORE 13
 
 #define DEADLOCK 1
-#define ACTIVE_DURATION 200
+#define ACTIVE_DURATION 75
 
 typedef struct {
   pthread_t thread;
