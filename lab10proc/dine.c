@@ -263,7 +263,7 @@ int check_for_deadlock()
     /*
      * 5. Use time values to determine if deadlock has occurred.
      */
-     if(new_user_time - user_progress[i] > ACTIVE_DURATION || new_sys_time - sys_progress[i] > ACTIVE_DURATION){
+     if(new_user_time != user_progress[i] || new_sys_time != sys_progress[i]){
 
          user_progress[i] = new_user_time - user_progress[i];
          sys_progress[i] = new_sys_time - sys_progress[i];
